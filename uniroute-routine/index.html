@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<base href="./">
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; script-src 'self'; connect-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07111f">
+  <title>UniRoute Routine</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <section class="auth-screen" id="authScreen">
+      <div class="aurora" aria-hidden="true"></div>
+      <div class="brand-panel">
+        <div class="brand-mark">UR</div>
+        <p class="eyebrow">University schedule command center</p>
+        <h1>UniRoute Routine</h1>
+        <p class="hero-copy">Create your weekly class routine, save room directions, track today, and know exactly where to go next.</p>
+        <div class="hero-stats">
+          <span>Weekly planner</span>
+          <span>Room notes</span>
+          <span>Offline ready</span>
+        </div>
+      </div>
+
+      <div class="auth-card">
+        <div class="auth-tabs" role="tablist" aria-label="Authentication">
+          <button class="tab-btn active" id="loginTab" type="button">Login</button>
+          <button class="tab-btn" id="signupTab" type="button">Signup</button>
+        </div>
+
+        <form id="loginForm" class="auth-form">
+          <label>Email
+            <input id="loginEmail" type="email" autocomplete="email" required placeholder="student@university.edu">
+          </label>
+          <label>Password
+            <input id="loginPassword" type="password" autocomplete="current-password" required placeholder="Enter password">
+          </label>
+          <button class="primary-btn" type="submit">Login to Dashboard</button>
+          <button class="ghost-btn" id="demoLogin" type="button">Use Demo Account</button>
+        </form>
+
+        <form id="signupForm" class="auth-form hidden">
+          <label>Full Name
+            <input id="signupName" type="text" autocomplete="name" required placeholder="Your name">
+          </label>
+          <label>Email
+            <input id="signupEmail" type="email" autocomplete="email" required placeholder="student@university.edu">
+          </label>
+          <label>Password
+            <input id="signupPassword" type="password" autocomplete="new-password" required minlength="4" placeholder="Minimum 4 characters">
+          </label>
+          <button class="primary-btn" type="submit">Create Account</button>
+        </form>
+        <p class="auth-note">This build uses localStorage for instant use. It is ready to connect to Firebase for real cross-device sync.</p>
+      </div>
+    </section>
+
+    <main class="dashboard hidden" id="dashboard">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Welcome back</p>
+          <h2 id="studentName">Student</h2>
+        </div>
+        <div class="top-actions">
+          <span class="status-pill" id="networkStatus">Online</span>
+          <button class="icon-btn" id="themeToggle" type="button" title="Toggle dark mode">◐</button>
+          <button class="outline-btn" id="logoutBtn" type="button">Logout</button>
+        </div>
+      </header>
+
+      <nav class="mobile-nav" aria-label="Main sections">
+        <button class="nav-btn active" data-section="homeSection" type="button">Home</button>
+        <button class="nav-btn" data-section="routineSection" type="button">Routine</button>
+        <button class="nav-btn" data-section="searchSection" type="button">Search</button>
+        <button class="nav-btn" data-section="settingsSection" type="button">Account</button>
+      </nav>
+
+      <section class="content-grid">
+        <aside class="side-rail">
+          <div class="mini-brand"><span>UR</span> UniRoute</div>
+          <button class="nav-btn active" data-section="homeSection" type="button">Dashboard</button>
+          <button class="nav-btn" data-section="routineSection" type="button">Create / Edit Routine</button>
+          <button class="nav-btn" data-section="searchSection" type="button">Search Classes</button>
+          <button class="nav-btn" data-section="settingsSection" type="button">Account & Sync</button>
+        </aside>
+
+        <div class="workspace">
+          <section id="homeSection" class="section active">
+            <div class="summary-grid">
+              <article class="metric-card next-card">
+                <span>Next class</span>
+                <strong id="nextSubject">No class scheduled</strong>
+                <p id="nextMeta">Add your weekly routine to start countdown.</p>
+                <div class="countdown" id="countdown">--:--:--</div>
+              </article>
+              <article class="metric-card">
+                <span>Today</span>
+                <strong id="todayCount">0</strong>
+                <p>classes scheduled</p>
+              </article>
+              <article class="metric-card">
+                <span>Finished</span>
+                <strong id="finishedCount">0</strong>
+                <p>attended today</p>
+              </article>
+              <article class="metric-card danger">
+                <span>Missed</span>
+                <strong id="missedCount">0</strong>
+                <p>ended without attendance</p>
+              </article>
+            </div>
+
+            <div class="panel">
+              <div class="panel-title">
+                <div>
+                  <p class="eyebrow">Today’s classes</p>
+                  <h3 id="todayLabel">Today</h3>
+                </div>
+                <button class="outline-btn" data-jump="routineSection" type="button">Add Class</button>
+              </div>
+              <div class="class-list" id="todayClasses"></div>
+            </div>
+          </section>
+
+          <section id="routineSection" class="section">
+            <div class="panel">
+              <div class="panel-title">
+                <div>
+                  <p class="eyebrow">Weekly builder</p>
+                  <h3 id="formTitle">Add a class</h3>
+                </div>
+                <button class="ghost-btn compact" id="clearForm" type="button">Clear</button>
+              </div>
+
+              <form class="routine-form" id="routineForm">
+                <input type="hidden" id="classId">
+                <label>Subject Name
+                  <input id="subjectName" required placeholder="Data Structures">
+                </label>
+                <label>Teacher Name
+                  <input id="teacherName" required placeholder="Dr. Rahman">
+                </label>
+                <label>Room Number
+                  <input id="roomNumber" required placeholder="CSE-304">
+                </label>
+                <label>Building Name
+                  <input id="buildingName" required placeholder="Engineering Tower">
+                </label>
+                <label>Day
+                  <select id="classDay" required>
+                    <option>Sunday</option>
+                    <option>Monday</option>
+                    <option>Tuesday</option>
+                    <option>Wednesday</option>
+                    <option>Thursday</option>
+                    <option>Friday</option>
+                    <option>Saturday</option>
+                  </select>
+                </label>
+                <label>Start Time
+                  <input id="startTime" type="time" required>
+                </label>
+                <label>End Time
+                  <input id="endTime" type="time" required>
+                </label>
+                <label>Color Tag
+                  <input id="colorTag" type="color" value="#38bdf8">
+                </label>
+                <label class="wide">Room Finder Note
+                  <textarea id="roomNote" rows="3" placeholder="3rd floor, beside lab 2. Use the east stair."></textarea>
+                </label>
+                <button class="primary-btn wide" type="submit">Save Class</button>
+              </form>
+            </div>
+
+            <div class="panel">
+              <div class="panel-title">
+                <div>
+                  <p class="eyebrow">All saved classes</p>
+                  <h3>Weekly Routine</h3>
+                </div>
+              </div>
+              <div class="class-list" id="routineList"></div>
+            </div>
+          </section>
+
+          <section id="searchSection" class="section">
+            <div class="panel">
+              <div class="panel-title">
+                <div>
+                  <p class="eyebrow">Find anything fast</p>
+                  <h3>Search routine</h3>
+                </div>
+              </div>
+              <div class="search-row">
+                <input id="searchInput" placeholder="Search subject, teacher, room, building, day, or note">
+                <select id="dayFilter">
+                  <option value="">All days</option>
+                  <option>Sunday</option>
+                  <option>Monday</option>
+                  <option>Tuesday</option>
+                  <option>Wednesday</option>
+                  <option>Thursday</option>
+                  <option>Friday</option>
+                  <option>Saturday</option>
+                </select>
+              </div>
+              <div class="class-list" id="searchResults"></div>
+            </div>
+          </section>
+
+          <section id="settingsSection" class="section">
+            <div class="panel">
+              <div class="panel-title">
+                <div>
+                  <p class="eyebrow">Student account</p>
+                  <h3>Profile & sync</h3>
+                </div>
+              </div>
+              <div class="settings-grid">
+                <div class="settings-card">
+                  <span class="settings-label">Current account</span>
+                  <strong id="accountEmail"></strong>
+                  <p>Your routine is saved under this login on this browser.</p>
+                </div>
+                <div class="settings-card">
+                  <span class="settings-label">Firebase upgrade path</span>
+                  <strong>Ready for online database</strong>
+                  <p>Add Firebase Auth and Firestore config in the marked section of <code>app.js</code> to sync across devices.</p>
+                </div>
+                <button class="danger-btn" id="clearData" type="button">Delete My Routine Data</button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </div>
+
+  <script src="app.js"></script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("../service-worker.js",{scope:"./"}).catch(()=>{});}</script></body>
+</html>

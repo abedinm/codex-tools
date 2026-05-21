@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<base href="./">
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#0a0e1a">
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10151f">
+  <title>NoteMorph</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="texture" aria-hidden="true"></div>
+
+  <main class="app">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Lecture notes transformer</p>
+        <h1>NoteMorph</h1>
+        <p>Paste messy lecture notes, organize them by course, and morph them into summaries, study notes, flashcards, and quizzes.</p>
+      </div>
+      <div class="hero-actions">
+        <button class="secondary-btn" id="loadDemo" type="button">Load Demo</button>
+        <button class="icon-btn" id="themeToggle" type="button" title="Toggle theme">◐</button>
+      </div>
+    </header>
+
+    <section class="layout">
+      <aside class="sidebar panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Folders</p>
+            <h2>Courses</h2>
+          </div>
+        </div>
+        <form id="courseForm" class="course-form">
+          <input id="courseName" placeholder="CSE 220" required>
+          <button class="primary-btn" type="submit">Add</button>
+        </form>
+        <div class="course-list" id="courseList"></div>
+      </aside>
+
+      <section class="workspace">
+        <div class="panel composer">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow" id="activeCourseLabel">No course selected</p>
+              <h2>Paste messy notes</h2>
+            </div>
+            <div class="export-actions">
+              <button class="secondary-btn compact" id="exportText" type="button">Export Text</button>
+              <button class="secondary-btn compact" id="exportPdf" type="button">Export PDF</button>
+            </div>
+          </div>
+
+          <textarea id="rawNotes" rows="12" placeholder="Paste lecture notes here. Example: OS lecture: process is program in execution, PCB keeps state, scheduling chooses next process..."></textarea>
+
+          <div class="composer-actions">
+            <button class="primary-btn" id="morphNotes" type="button">Morph Notes</button>
+            <button class="secondary-btn" id="saveNote" type="button">Save To Course</button>
+            <button class="danger-btn" id="clearNotes" type="button">Clear</button>
+          </div>
+          <p class="api-note">AI API hook is included in <code>app.js</code>. Local processing is active until an API endpoint/key is added.</p>
+        </div>
+
+        <div class="panel output-panel" id="printArea">
+          <div class="panel-head print-title">
+            <div>
+              <p class="eyebrow">Morphed output</p>
+              <h2 id="outputTitle">Study Pack</h2>
+            </div>
+          </div>
+
+          <nav class="tabs" aria-label="Output formats">
+            <button class="tab active" data-tab="summaryTab" type="button">Summary</button>
+            <button class="tab" data-tab="bulletsTab" type="button">Study Notes</button>
+            <button class="tab" data-tab="flashcardsTab" type="button">Flashcards</button>
+            <button class="tab" data-tab="quizTab" type="button">Quiz</button>
+          </nav>
+
+          <section class="tab-panel active" id="summaryTab">
+            <div class="summary-card" id="summaryOutput"></div>
+          </section>
+
+          <section class="tab-panel" id="bulletsTab">
+            <div class="notes-list" id="bulletsOutput"></div>
+          </section>
+
+          <section class="tab-panel" id="flashcardsTab">
+            <div class="flashcard-toolbar">
+              <button class="secondary-btn compact" id="prevCard" type="button">Previous</button>
+              <span id="cardCounter">0 / 0</span>
+              <button class="secondary-btn compact" id="nextCard" type="button">Next</button>
+            </div>
+            <button class="flashcard" id="flashcard" type="button">
+              <span class="card-label">Flashcard</span>
+              <strong id="cardFront">Morph notes to generate flashcards.</strong>
+              <p id="cardBack">Click a generated card to flip it.</p>
+            </button>
+            <div class="flashcard-grid" id="flashcardGrid"></div>
+          </section>
+
+          <section class="tab-panel" id="quizTab">
+            <div class="quiz-actions">
+              <button class="primary-btn compact" id="startQuiz" type="button">Start Quiz</button>
+              <span id="quizScore">Score: 0 / 0</span>
+            </div>
+            <div class="quiz-list" id="quizOutput"></div>
+          </section>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("../service-worker.js",{scope:"./"}).catch(()=>{});}</script></body>
+</html>

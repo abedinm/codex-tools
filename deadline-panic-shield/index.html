@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+<base href="./">
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#0a0e1a">
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0a0d14">
+  <title>Deadline Panic Shield</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="background-grid" aria-hidden="true"></div>
+
+  <section class="auth-view" id="authView">
+    <div class="hero">
+      <p class="eyebrow">University survival system</p>
+      <h1>Deadline Panic Shield</h1>
+      <p>Track assignments, sort by urgency, and get a calm emergency plan when the deadline is too close for comfort.</p>
+      <div class="hero-badges">
+        <span>Urgency dashboard</span>
+        <span>Panic Mode</span>
+        <span>Firebase-ready</span>
+      </div>
+    </div>
+
+    <div class="auth-card">
+      <div class="tabs">
+        <button class="tab active" id="loginTab" type="button">Login</button>
+        <button class="tab" id="signupTab" type="button">Signup</button>
+      </div>
+
+      <form class="auth-form" id="loginForm">
+        <label>Email
+          <input id="loginEmail" type="email" required autocomplete="email" placeholder="student@university.edu">
+        </label>
+        <label>Password
+          <input id="loginPassword" type="password" required autocomplete="current-password" placeholder="Password">
+        </label>
+        <button class="primary-btn" type="submit">Enter Dashboard</button>
+        <button class="secondary-btn" id="demoLogin" type="button">Try Demo Dashboard</button>
+      </form>
+
+      <form class="auth-form hidden" id="signupForm">
+        <label>Name
+          <input id="signupName" required autocomplete="name" placeholder="Your full name">
+        </label>
+        <label>Email
+          <input id="signupEmail" type="email" required autocomplete="email" placeholder="student@university.edu">
+        </label>
+        <label>Password
+          <input id="signupPassword" type="password" required minlength="6" autocomplete="new-password" placeholder="At least 6 characters">
+        </label>
+        <button class="primary-btn" type="submit">Create Account</button>
+      </form>
+
+      <div class="cloud-note" id="cloudNote">Local demo mode is active until Firebase config is added.</div>
+    </div>
+  </section>
+
+  <main class="app hidden" id="appView">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Deadline command center</p>
+        <h2 id="studentName">Student</h2>
+      </div>
+      <div class="top-actions">
+        <button class="secondary-btn compact" id="notificationBtn" type="button">Enable Notifications</button>
+        <button class="icon-btn" id="themeToggle" type="button" title="Toggle dark mode">◐</button>
+        <button class="secondary-btn compact" id="logoutBtn" type="button">Logout</button>
+      </div>
+    </header>
+
+    <section class="metrics">
+      <article class="metric urgent">
+        <span>Within 24h</span>
+        <strong id="panicCount">0</strong>
+      </article>
+      <article class="metric">
+        <span>Active</span>
+        <strong id="activeCount">0</strong>
+      </article>
+      <article class="metric">
+        <span>Submitted</span>
+        <strong id="submittedCount">0</strong>
+      </article>
+      <article class="metric">
+        <span>Average Progress</span>
+        <strong id="averageProgress">0%</strong>
+      </article>
+    </section>
+
+    <section class="panic-panel hidden" id="panicPanel">
+      <div>
+        <p class="eyebrow">Panic Mode</p>
+        <h3 id="panicTitle">Emergency plan ready</h3>
+        <p id="panicSubtitle">A deadline is within 24 hours. Follow this sequence and move.</p>
+      </div>
+      <ol id="panicSteps"></ol>
+    </section>
+
+    <section class="layout">
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Assignment input</p>
+            <h3 id="formTitle">Add assignment</h3>
+          </div>
+          <button class="secondary-btn compact" id="resetForm" type="button">Clear</button>
+        </div>
+
+        <form id="assignmentForm" class="assignment-form">
+          <input type="hidden" id="assignmentId">
+          <label>Course Name
+            <input id="courseName" required placeholder="CSE 321">
+          </label>
+          <label>Assignment Title
+            <input id="assignmentTitle" required placeholder="Research report">
+          </label>
+          <label>Deadline Date & Time
+            <input id="deadlineAt" type="datetime-local" required>
+          </label>
+          <label>Required Word Count
+            <input id="wordCount" type="number" min="0" step="50" required placeholder="1500">
+          </label>
+          <label>Submission Link
+            <input id="submissionLink" type="url" placeholder="https://classroom.google.com/...">
+          </label>
+          <label>Current Progress
+            <input id="progress" type="range" min="0" max="100" value="0">
+            <span class="range-value" id="progressValue">0%</span>
+          </label>
+          <label>Status
+            <select id="status" required>
+              <option>Not Started</option>
+              <option>Started</option>
+              <option>Almost Done</option>
+              <option>Submitted</option>
+            </select>
+          </label>
+          <label class="wide">Notes
+            <textarea id="notes" rows="3" placeholder="Rubric reminders, teacher instructions, file format, group members..."></textarea>
+          </label>
+          <button class="primary-btn wide" type="submit">Save Assignment</button>
+        </form>
+      </div>
+
+      <div class="panel assignments-panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Sorted by urgency</p>
+            <h3>Assignment shield</h3>
+          </div>
+          <select id="statusFilter" class="filter">
+            <option value="">All statuses</option>
+            <option>Not Started</option>
+            <option>Started</option>
+            <option>Almost Done</option>
+            <option>Submitted</option>
+          </select>
+        </div>
+        <div class="assignment-list" id="assignmentList"></div>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="app.js"></script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("../service-worker.js",{scope:"./"}).catch(()=>{});}</script></body>
+</html>

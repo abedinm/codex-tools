@@ -1,0 +1,20 @@
+node_modules/
+.DS_Store
+*.log
+.env
+.env.local
+*.zip
+build/
+dist/
+.cache/
+
+# Exclude unrelated subprojects — they get their own repos
+ai-course-build/
+ai-course-chatgpt/
+github-ecosystem/
+github-product-wave/
+linguabot/
+siteforge-studio/
+
+# Exclude generated reports and stashed workflow
+.github-pending/

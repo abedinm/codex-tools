@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<base href="./">
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#0a0e1a">
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111827">
+  <title>StudyBuddy Match</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <section class="auth" id="auth">
+    <div class="hero">
+      <p class="eyebrow">Safe study partner finder</p>
+      <h1>StudyBuddy Match</h1>
+      <p>Create a private profile, find compatible students by course and study style, then send a contact request.</p>
+    </div>
+    <div class="card auth-card">
+      <div class="tabs"><button class="tab active" id="loginTab">Login</button><button class="tab" id="signupTab">Signup</button></div>
+      <form id="loginForm" class="form">
+        <label>Email <input id="loginEmail" type="email" required></label>
+        <label>Password <input id="loginPassword" type="password" required></label>
+        <button class="primary">Open Matches</button><button class="secondary" id="demoBtn" type="button">Use Demo</button>
+      </form>
+      <form id="signupForm" class="form hidden">
+        <label>Name <input id="signupName" required></label>
+        <label>Email <input id="signupEmail" type="email" required></label>
+        <label>Password <input id="signupPassword" type="password" minlength="4" required></label>
+        <button class="primary">Create Account</button>
+      </form>
+    </div>
+  </section>
+
+  <main class="app hidden" id="app">
+    <header class="topbar">
+      <div><p class="eyebrow">Minimal and private</p><h2 id="studentName">Student</h2></div>
+      <button class="secondary small" id="logoutBtn">Logout</button>
+    </header>
+
+    <section class="grid">
+      <div class="card">
+        <div class="head"><div><p class="eyebrow">Your profile</p><h3>Study identity</h3></div></div>
+        <form id="profileForm" class="profile-form">
+          <label>Display Name <input id="displayName" required></label>
+          <label>University <input id="university" required></label>
+          <label>Department <input id="department" required></label>
+          <label>Semester <input id="semester" type="number" min="1" max="20" required></label>
+          <label>Courses <input id="courses" required placeholder="CSE 220, MAT 120"></label>
+          <label>Preferred Time <select id="time"><option>Morning</option><option>Afternoon</option><option>Evening</option><option>Late Night</option></select></label>
+          <label>Study Style <select id="style"><option>Quiet Focus</option><option>Discussion</option><option>Problem Solving</option><option>Accountability</option></select></label>
+          <label>Preference <select id="preference"><option>Online</option><option>Offline</option><option>Both</option></select></label>
+          <label class="wide">Study Goals <input id="goals" placeholder="Prepare for finals, solve practice sheets"></label>
+          <label class="wide checkbox"><input id="privateProfile" type="checkbox"> Private profile: hide contact info until request accepted</label>
+          <label class="wide">Contact Info <input id="contact" placeholder="Email, WhatsApp, Discord"></label>
+          <button class="primary wide">Save Profile</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="head"><div><p class="eyebrow">Filters</p><h3>Find matches</h3></div></div>
+        <div class="filters">
+          <input id="filterCourse" placeholder="Course">
+          <input id="filterSemester" type="number" min="1" placeholder="Semester">
+          <select id="filterPreference"><option value="">Any mode</option><option>Online</option><option>Offline</option><option>Both</option></select>
+          <select id="filterTime"><option value="">Any time</option><option>Morning</option><option>Afternoon</option><option>Evening</option><option>Late Night</option></select>
+        </div>
+        <div class="matches" id="matches"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="head"><div><p class="eyebrow">Contact requests</p><h3>Basic chat</h3></div></div>
+      <div class="chat" id="chat"></div>
+      <form id="chatForm" class="chat-form">
+        <input id="chatTo" placeholder="Buddy name" required>
+        <input id="chatText" placeholder="Message" required>
+        <button class="primary">Send</button>
+      </form>
+    </section>
+  </main>
+  <div class="toast" id="toast"></div>
+  <script src="app.js"></script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("../service-worker.js",{scope:"./"}).catch(()=>{});}</script></body>
+</html>

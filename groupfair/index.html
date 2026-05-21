@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<base href="./">
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#0a0e1a">
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101820">
+  <title>GroupFair</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="grid-bg" aria-hidden="true"></div>
+
+  <main class="app">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">University group project balance board</p>
+        <h1>GroupFair</h1>
+        <p>Create a project, assign work, track deadlines, and see whether every member is carrying a fair share.</p>
+      </div>
+      <div class="hero-actions">
+        <button class="secondary-btn" id="loadDemo" type="button">Load Demo</button>
+        <button class="icon-btn" id="themeToggle" type="button" title="Toggle theme">◐</button>
+      </div>
+    </header>
+
+    <section class="project-strip panel">
+      <form id="projectForm" class="project-form">
+        <label>Project Name
+          <input id="projectName" required placeholder="Software Engineering Final Project">
+        </label>
+        <label>Course
+          <input id="courseName" placeholder="CSE 320">
+        </label>
+        <label>Final Deadline
+          <input id="projectDeadline" type="date">
+        </label>
+        <button class="primary-btn" type="submit">Save Project</button>
+      </form>
+      <div class="share-box">
+        <label>Shared Project Link
+          <input id="shareLink" readonly placeholder="Save project to generate a share link">
+        </label>
+        <button class="secondary-btn" id="copyShare" type="button">Copy Link</button>
+      </div>
+    </section>
+
+    <section class="metrics">
+      <article class="metric">
+        <span>Project Progress</span>
+        <strong id="projectProgress">0%</strong>
+        <div class="progress"><div id="projectProgressBar"></div></div>
+      </article>
+      <article class="metric">
+        <span>Fairness Health</span>
+        <strong id="fairnessHealth">--</strong>
+        <p id="fairnessHint">Add members and tasks to calculate fairness.</p>
+      </article>
+      <article class="metric">
+        <span>Open Tasks</span>
+        <strong id="openTasks">0</strong>
+        <p id="urgentTasks">0 urgent</p>
+      </article>
+    </section>
+
+    <section class="layout">
+      <aside class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Team</p>
+            <h2>Members</h2>
+          </div>
+        </div>
+        <form id="memberForm" class="inline-form">
+          <input id="memberName" required placeholder="Member name">
+          <button class="primary-btn compact" type="submit">Add</button>
+        </form>
+        <div class="member-list" id="memberList"></div>
+      </aside>
+
+      <section class="workspace">
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Task builder</p>
+              <h2 id="taskFormTitle">Add task</h2>
+            </div>
+            <button class="secondary-btn compact" id="clearTaskForm" type="button">Clear</button>
+          </div>
+          <form id="taskForm" class="task-form">
+            <input type="hidden" id="taskId">
+            <label>Task Title
+              <input id="taskTitle" required placeholder="Build presentation slides">
+            </label>
+            <label>Assigned Member
+              <select id="taskAssignee" required></select>
+            </label>
+            <label>Difficulty
+              <select id="taskDifficulty" required>
+                <option value="1">1 - Easy</option>
+                <option value="2">2 - Light</option>
+                <option value="3" selected>3 - Medium</option>
+                <option value="4">4 - Hard</option>
+                <option value="5">5 - Very Hard</option>
+              </select>
+            </label>
+            <label>Deadline
+              <input id="taskDeadline" type="date" required>
+            </label>
+            <label>Status
+              <select id="taskStatus" required>
+                <option>Todo</option>
+                <option>In Progress</option>
+                <option>Review</option>
+                <option>Done</option>
+              </select>
+            </label>
+            <label>File Link
+              <input id="taskFile" type="url" placeholder="https://drive.google.com/...">
+            </label>
+            <label class="wide">Notes
+              <textarea id="taskNotes" rows="3" placeholder="Requirements, rubric notes, or handoff details"></textarea>
+            </label>
+            <button class="primary-btn wide" type="submit">Save Task</button>
+          </form>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Work board</p>
+              <h2>Tasks</h2>
+            </div>
+            <select id="statusFilter" class="filter">
+              <option value="">All statuses</option>
+              <option>Todo</option>
+              <option>In Progress</option>
+              <option>Review</option>
+              <option>Done</option>
+            </select>
+          </div>
+          <div class="task-list" id="taskList"></div>
+        </div>
+      </section>
+    </section>
+
+    <section class="bottom-grid">
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Discussion</p>
+            <h2>Project comments</h2>
+          </div>
+        </div>
+        <form id="commentForm" class="comment-form">
+          <input id="commentName" placeholder="Your name">
+          <textarea id="commentText" rows="3" required placeholder="Add update, blocker, or meeting note"></textarea>
+          <button class="primary-btn" type="submit">Add Comment</button>
+        </form>
+        <div class="comment-list" id="commentList"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Submission readiness</p>
+            <h2>Final checklist</h2>
+          </div>
+        </div>
+        <div class="checklist" id="checklist"></div>
+        <form id="checkForm" class="inline-form">
+          <input id="checkText" required placeholder="Add custom checklist item">
+          <button class="primary-btn compact" type="submit">Add</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("../service-worker.js",{scope:"./"}).catch(()=>{});}</script></body>
+</html>

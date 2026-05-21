@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<base href="./">
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#0a0e1a">
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111827">
+  <title>LabReport Pro</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="grid-bg" aria-hidden="true"></div>
+
+  <section class="auth" id="auth">
+    <div class="hero">
+      <p class="eyebrow">Structured lab report studio</p>
+      <h1>LabReport Pro</h1>
+      <p>Create clean university lab reports with templates, tables, equations, images, autosave, and PDF export.</p>
+    </div>
+    <div class="card auth-card">
+      <div class="tabs">
+        <button class="tab active" id="loginTab" type="button">Login</button>
+        <button class="tab" id="signupTab" type="button">Signup</button>
+      </div>
+      <form id="loginForm" class="form">
+        <label>Email <input id="loginEmail" type="email" required></label>
+        <label>Password <input id="loginPassword" type="password" required></label>
+        <button class="primary" type="submit">Open Editor</button>
+        <button class="secondary" id="demoBtn" type="button">Use Demo</button>
+      </form>
+      <form id="signupForm" class="form hidden">
+        <label>Name <input id="signupName" required></label>
+        <label>Email <input id="signupEmail" type="email" required></label>
+        <label>Password <input id="signupPassword" type="password" minlength="4" required></label>
+        <button class="primary" type="submit">Create Account</button>
+      </form>
+    </div>
+  </section>
+
+  <main class="app hidden" id="app">
+    <header class="topbar no-print">
+      <div>
+        <p class="eyebrow">Autosaving editor</p>
+        <h2 id="studentName">Student</h2>
+      </div>
+      <div class="actions">
+        <select id="templateSelect">
+          <option value="">Choose template</option>
+          <option value="physics">Physics</option>
+          <option value="chemistry">Chemistry</option>
+          <option value="electrical">Electrical</option>
+          <option value="civil">Civil</option>
+          <option value="computer">Computer</option>
+        </select>
+        <button class="secondary small" id="newReport" type="button">New</button>
+        <button class="secondary small" id="exportPdf" type="button">Export PDF</button>
+        <button class="secondary small" id="logoutBtn" type="button">Logout</button>
+      </div>
+    </header>
+
+    <section class="layout">
+      <aside class="card sidebar no-print">
+        <div class="head"><div><p class="eyebrow">Saved reports</p><h3>My reports</h3></div></div>
+        <div class="report-list" id="reportList"></div>
+      </aside>
+
+      <section class="editor card" id="printArea">
+        <div class="report-cover">
+          <label class="no-print">Report Title <input id="title" placeholder="Determination of acceleration due to gravity"></label>
+          <h1 id="printTitle">Untitled Lab Report</h1>
+          <div class="meta-grid">
+            <label>Course / Lab <input id="course" placeholder="PHY 110 Lab"></label>
+            <label>Student Name <input id="author" placeholder="Your name"></label>
+            <label>Teacher <input id="teacher" placeholder="Instructor name"></label>
+            <label>Date <input id="date" type="date"></label>
+          </div>
+        </div>
+
+        <div class="section-grid">
+          <label>Objective <textarea id="objective" rows="4"></textarea></label>
+          <label>Theory <textarea id="theory" rows="5"></textarea></label>
+          <label>Apparatus <textarea id="apparatus" rows="4"></textarea></label>
+          <label>Procedure <textarea id="procedure" rows="5"></textarea></label>
+        </div>
+
+        <section class="subsection">
+          <div class="head no-print">
+            <div><p class="eyebrow">Data table</p><h3>Measurements</h3></div>
+            <div class="actions">
+              <button class="secondary small" id="addRow" type="button">Add Row</button>
+              <button class="secondary small" id="addCol" type="button">Add Column</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table id="dataTable"></table>
+          </div>
+        </section>
+
+        <section class="subsection">
+          <label>Calculation / Equation Input
+            <textarea id="calculation" rows="5" placeholder="Example: R = V / I, average = sum / n"></textarea>
+          </label>
+        </section>
+
+        <div class="section-grid">
+          <label>Result <textarea id="result" rows="4"></textarea></label>
+          <label>Discussion <textarea id="discussion" rows="5"></textarea></label>
+          <label>Precautions <textarea id="precautions" rows="4"></textarea></label>
+          <label>Conclusion <textarea id="conclusion" rows="4"></textarea></label>
+        </div>
+
+        <section class="subsection no-print">
+          <div class="head">
+            <div><p class="eyebrow">Images</p><h3>Upload diagrams or observations</h3></div>
+          </div>
+          <input id="imageInput" type="file" accept="image/*" multiple>
+        </section>
+        <section class="image-grid" id="imageGrid"></section>
+      </section>
+    </section>
+  </main>
+
+  <div class="toast" id="toast"></div>
+  <script src="app.js"></script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("../service-worker.js",{scope:"./"}).catch(()=>{});}</script></body>
+</html>

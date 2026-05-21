@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<base href="./">
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#0a0e1a">
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101820">
+  <title>Student Survival Wallet</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+
+  <section class="auth-screen" id="authScreen">
+    <div class="hero">
+      <p class="eyebrow">Monthly money guard</p>
+      <h1>Student Survival Wallet</h1>
+      <p>Track allowance, rent, food, transport, mobile data, emergency costs, and daily spending before your budget quietly disappears.</p>
+      <div class="hero-tags">
+        <span>Safe daily spend</span>
+        <span>Low budget mode</span>
+        <span>Firebase-ready sync</span>
+      </div>
+    </div>
+
+    <div class="auth-card">
+      <div class="tabs" role="tablist" aria-label="Login or signup">
+        <button class="tab active" id="loginTab" type="button">Login</button>
+        <button class="tab" id="signupTab" type="button">Signup</button>
+      </div>
+
+      <form id="loginForm" class="auth-form">
+        <label>Email
+          <input id="loginEmail" type="email" required autocomplete="email" placeholder="student@university.edu">
+        </label>
+        <label>Password
+          <input id="loginPassword" type="password" required autocomplete="current-password" placeholder="Password">
+        </label>
+        <button class="primary-btn" type="submit">Open Wallet</button>
+        <button class="secondary-btn" id="demoLogin" type="button">Use Demo Wallet</button>
+      </form>
+
+      <form id="signupForm" class="auth-form hidden">
+        <label>Name
+          <input id="signupName" required autocomplete="name" placeholder="Your name">
+        </label>
+        <label>Email
+          <input id="signupEmail" type="email" required autocomplete="email" placeholder="student@university.edu">
+        </label>
+        <label>Password
+          <input id="signupPassword" type="password" minlength="6" required autocomplete="new-password" placeholder="At least 6 characters">
+        </label>
+        <button class="primary-btn" type="submit">Create Wallet</button>
+      </form>
+      <p class="mode-note" id="modeNote">Local demo mode is active until Firebase config is added.</p>
+    </div>
+  </section>
+
+  <main class="app hidden" id="app">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Budget command center</p>
+        <h2 id="studentName">Student</h2>
+      </div>
+      <div class="actions">
+        <button class="secondary-btn compact" id="addTodaySpend" type="button">Add Today Spend</button>
+        <button class="icon-btn" id="themeToggle" type="button" title="Toggle theme">◐</button>
+        <button class="secondary-btn compact" id="logoutBtn" type="button">Logout</button>
+      </div>
+    </header>
+
+    <section class="metrics">
+      <article class="metric hero-metric">
+        <span>Safe spend per day</span>
+        <strong id="safeDaily">৳0</strong>
+        <p id="safeDailyHint">For the rest of this month</p>
+      </article>
+      <article class="metric">
+        <span>Money left</span>
+        <strong id="moneyLeft">৳0</strong>
+        <p id="daysLeft">0 days left</p>
+      </article>
+      <article class="metric">
+        <span>Spent so far</span>
+        <strong id="spentSoFar">৳0</strong>
+        <p id="burnRate">Daily burn ৳0</p>
+      </article>
+      <article class="metric alert">
+        <span>Budget status</span>
+        <strong id="budgetStatus">--</strong>
+        <p id="budgetMessage">Enter your monthly numbers.</p>
+      </article>
+    </section>
+
+    <section class="survival-panel hidden" id="survivalPanel">
+      <div>
+        <p class="eyebrow">Low Budget Survival Mode</p>
+        <h3 id="survivalTitle">Time to protect the wallet</h3>
+      </div>
+      <div class="suggestions" id="suggestions"></div>
+    </section>
+
+    <section class="layout">
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Monthly plan</p>
+            <h3>Income and fixed costs</h3>
+          </div>
+        </div>
+
+        <form id="walletForm" class="wallet-form">
+          <label>Monthly Allowance / Income
+            <input id="income" type="number" min="0" step="1" required>
+          </label>
+          <label>Daily Spending So Far
+            <input id="dailySpending" type="number" min="0" step="1" required>
+          </label>
+          <label>Food Cost
+            <input id="foodCost" type="number" min="0" step="1" required>
+          </label>
+          <label>Transport Cost
+            <input id="transportCost" type="number" min="0" step="1" required>
+          </label>
+          <label>Rent
+            <input id="rent" type="number" min="0" step="1" required>
+          </label>
+          <label>Mobile Data Cost
+            <input id="mobileData" type="number" min="0" step="1" required>
+          </label>
+          <label>Emergency Expenses
+            <input id="emergency" type="number" min="0" step="1" required>
+          </label>
+          <label>Currency
+            <input id="currency" maxlength="4" required value="৳">
+          </label>
+          <button class="primary-btn wide" type="submit">Save Budget</button>
+        </form>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Spending categories</p>
+            <h3>Charts</h3>
+          </div>
+        </div>
+        <div class="chart-grid">
+          <canvas id="categoryChart" width="640" height="360" aria-label="Category spending chart"></canvas>
+          <canvas id="walletChart" width="640" height="360" aria-label="Wallet balance chart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <section class="bottom-grid">
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Extra categories</p>
+            <h3>Custom spending</h3>
+          </div>
+          <button class="secondary-btn compact" id="clearCategoryForm" type="button">Clear</button>
+        </div>
+        <form id="categoryForm" class="category-form">
+          <input type="hidden" id="categoryId">
+          <label>Category
+            <input id="categoryName" required placeholder="Printing, snacks, books">
+          </label>
+          <label>Amount
+            <input id="categoryAmount" type="number" min="0" step="1" required>
+          </label>
+          <button class="primary-btn wide" type="submit">Save Category</button>
+        </form>
+        <div class="category-list" id="categoryList"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Daily log</p>
+            <h3>Spending records</h3>
+          </div>
+        </div>
+        <form id="logForm" class="log-form">
+          <label>Date
+            <input id="logDate" type="date" required>
+          </label>
+          <label>Amount
+            <input id="logAmount" type="number" min="0" step="1" required>
+          </label>
+          <label class="wide">Note
+            <input id="logNote" placeholder="Lunch, bus, photocopy">
+          </label>
+          <button class="primary-btn wide" type="submit">Add Spending</button>
+        </form>
+        <div class="log-list" id="logList"></div>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="app.js"></script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("../service-worker.js",{scope:"./"}).catch(()=>{});}</script></body>
+</html>

@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<base href="./">
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#0a0e1a">
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111827">
+  <title>CourseVault</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="grid-bg" aria-hidden="true"></div>
+  <main class="app">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Campus resource exchange</p>
+        <h1>CourseVault</h1>
+        <p>Share lecture notes, previous questions, slides, books, YouTube links, and lab reports by department, semester, course, and teacher.</p>
+      </div>
+      <div class="hero-actions">
+        <button class="secondary" id="loadDemo" type="button">Load Demo</button>
+        <button class="secondary" id="adminToggle" type="button">Admin Mode</button>
+      </div>
+    </header>
+
+    <section class="layout">
+      <aside class="card">
+        <div class="head">
+          <div><p class="eyebrow">Upload / share</p><h2 id="formTitle">Add resource</h2></div>
+          <button class="secondary small" id="clearForm" type="button">Clear</button>
+        </div>
+        <form id="resourceForm" class="form">
+          <input type="hidden" id="resourceId">
+          <label>Title <input id="title" required placeholder="Midterm Previous Question 2024"></label>
+          <label>Department <input id="department" required placeholder="CSE"></label>
+          <label>Semester <input id="semester" type="number" min="1" max="20" required placeholder="5"></label>
+          <label>Course Code <input id="courseCode" required placeholder="CSE 220"></label>
+          <label>Teacher <input id="teacher" placeholder="Dr. Rahman"></label>
+          <label>Resource Type
+            <select id="resourceType" required>
+              <option>Lecture Note</option>
+              <option>Previous Question</option>
+              <option>Slide</option>
+              <option>Book Link</option>
+              <option>YouTube Link</option>
+              <option>Lab Report</option>
+            </select>
+          </label>
+          <label>Download / View Link <input id="downloadLink" type="url" required placeholder="https://drive.google.com/..."></label>
+          <label class="wide">Description <textarea id="description" rows="4" placeholder="What this resource covers, exam term, chapter, quality note..."></textarea></label>
+          <button class="primary wide" type="submit">Publish Resource</button>
+        </form>
+      </aside>
+
+      <section class="workspace">
+        <section class="card filters">
+          <div class="head">
+            <div><p class="eyebrow">Search vault</p><h2>Find resources</h2></div>
+          </div>
+          <div class="filter-grid">
+            <input id="search" placeholder="Search title, course, teacher, description">
+            <input id="filterDept" placeholder="Department">
+            <input id="filterSemester" type="number" min="1" placeholder="Semester">
+            <input id="filterCourse" placeholder="Course code">
+            <select id="filterType">
+              <option value="">All resource types</option>
+              <option>Lecture Note</option>
+              <option>Previous Question</option>
+              <option>Slide</option>
+              <option>Book Link</option>
+              <option>YouTube Link</option>
+              <option>Lab Report</option>
+            </select>
+            <select id="filterStatus">
+              <option value="">Visible resources</option>
+              <option value="reported">Reported only</option>
+              <option value="hidden">Hidden by admin</option>
+            </select>
+          </div>
+        </section>
+
+        <section class="stats">
+          <article class="stat card"><span>Total Resources</span><strong id="totalCount">0</strong></article>
+          <article class="stat card"><span>Average Rating</span><strong id="avgRating">0.0</strong></article>
+          <article class="stat card warn"><span>Reports</span><strong id="reportCount">0</strong></article>
+        </section>
+
+        <section class="resource-list" id="resourceList"></section>
+      </section>
+    </section>
+  </main>
+
+  <dialog id="commentDialog">
+    <form method="dialog" class="dialog-card">
+      <h3 id="commentTitle">Comments</h3>
+      <div id="commentList" class="comment-list"></div>
+      <label>Your Name <input id="commentName" placeholder="Anonymous"></label>
+      <label>Comment <textarea id="commentText" rows="3" placeholder="Was this helpful? Any warnings?"></textarea></label>
+      <button class="primary" id="saveComment" type="button">Add Comment</button>
+      <button class="secondary" type="submit">Close</button>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("../service-worker.js",{scope:"./"}).catch(()=>{});}</script></body>
+</html>

@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<base href="./">
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#0a0e1a">
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111827">
+  <title>Exam War Room</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="battle-grid" aria-hidden="true"></div>
+
+  <section class="auth-screen" id="authScreen">
+    <div class="hero">
+      <p class="eyebrow">Study campaign planner</p>
+      <h1>Exam War Room</h1>
+      <p>Add upcoming exams, split syllabus topics into daily missions, and let the planner give harder subjects more study time.</p>
+      <div class="hero-tags">
+        <span>Countdowns</span>
+        <span>Daily study plan</span>
+        <span>Revision mode</span>
+      </div>
+    </div>
+
+    <div class="auth-card">
+      <div class="tabs">
+        <button class="tab active" id="loginTab" type="button">Login</button>
+        <button class="tab" id="signupTab" type="button">Signup</button>
+      </div>
+
+      <form id="loginForm" class="auth-form">
+        <label>Email
+          <input id="loginEmail" type="email" autocomplete="email" required placeholder="student@university.edu">
+        </label>
+        <label>Password
+          <input id="loginPassword" type="password" autocomplete="current-password" required placeholder="Password">
+        </label>
+        <button class="primary-btn" type="submit">Enter War Room</button>
+        <button class="secondary-btn" id="demoLogin" type="button">Use Demo Plan</button>
+      </form>
+
+      <form id="signupForm" class="auth-form hidden">
+        <label>Name
+          <input id="signupName" autocomplete="name" required placeholder="Your name">
+        </label>
+        <label>Email
+          <input id="signupEmail" type="email" autocomplete="email" required placeholder="student@university.edu">
+        </label>
+        <label>Password
+          <input id="signupPassword" type="password" autocomplete="new-password" minlength="6" required placeholder="At least 6 characters">
+        </label>
+        <button class="primary-btn" type="submit">Create Account</button>
+      </form>
+      <p class="mode-note" id="modeNote">Local demo mode is active until Firebase config is added.</p>
+    </div>
+  </section>
+
+  <main class="app hidden" id="app">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Mission control</p>
+        <h2 id="studentName">Student</h2>
+      </div>
+      <div class="actions">
+        <button class="secondary-btn compact" id="revisionToggle" type="button">Revision Mode</button>
+        <button class="icon-btn" id="themeToggle" type="button" title="Toggle theme">◐</button>
+        <button class="secondary-btn compact" id="logoutBtn" type="button">Logout</button>
+      </div>
+    </header>
+
+    <section class="metrics">
+      <article class="metric next-card">
+        <span>Next exam</span>
+        <strong id="nextExamName">No exams</strong>
+        <p id="nextExamMeta">Add an exam to start planning.</p>
+        <div class="countdown" id="countdown">--d --h --m</div>
+      </article>
+      <article class="metric">
+        <span>Overall progress</span>
+        <strong id="overallProgress">0%</strong>
+        <div class="progress"><div id="overallProgressBar"></div></div>
+      </article>
+      <article class="metric">
+        <span>Study today</span>
+        <strong id="todayMinutes">0 min</strong>
+        <p id="todayMissionCount">0 missions</p>
+      </article>
+      <article class="metric alert">
+        <span>Pressure</span>
+        <strong id="pressureLabel">Calm</strong>
+        <p id="pressureHint">Add exams to calculate pressure.</p>
+      </article>
+    </section>
+
+    <section class="layout">
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Exam setup</p>
+            <h3 id="examFormTitle">Add exam</h3>
+          </div>
+          <button class="secondary-btn compact" id="clearExamForm" type="button">Clear</button>
+        </div>
+
+        <form id="examForm" class="exam-form">
+          <input type="hidden" id="examId">
+          <label>Course Name
+            <input id="courseName" required placeholder="CSE 321">
+          </label>
+          <label>Exam Date
+            <input id="examDate" type="datetime-local" required>
+          </label>
+          <label>Difficulty Level
+            <select id="difficulty" required>
+              <option value="1">1 - Easy</option>
+              <option value="2">2 - Light</option>
+              <option value="3" selected>3 - Medium</option>
+              <option value="4">4 - Hard</option>
+              <option value="5">5 - Brutal</option>
+            </select>
+          </label>
+          <label>Daily Study Capacity
+            <input id="dailyCapacity" type="number" min="20" max="600" step="10" value="120" required>
+          </label>
+          <label class="wide">Syllabus Topics
+            <textarea id="topicsInput" rows="6" required placeholder="One topic per line: Process scheduling, Deadlocks, Memory management..."></textarea>
+          </label>
+          <button class="primary-btn wide" type="submit">Save Exam</button>
+        </form>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Clean dashboard</p>
+            <h3>Upcoming exams</h3>
+          </div>
+        </div>
+        <div class="exam-list" id="examList"></div>
+      </div>
+    </section>
+
+    <section class="bottom-grid">
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Auto plan</p>
+            <h3 id="planTitle">Daily study plan</h3>
+          </div>
+          <select id="planFilter" class="filter"></select>
+        </div>
+        <div class="plan-list" id="studyPlan"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Calendar view</p>
+            <h3>This month</h3>
+          </div>
+        </div>
+        <div class="calendar" id="calendar"></div>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="app.js"></script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("../service-worker.js",{scope:"./"}).catch(()=>{});}</script></body>
+</html>

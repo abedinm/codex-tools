@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<base href="./">
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#0a0e1a">
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101827">
+  <title>Attendance Guardian</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <section class="auth" id="auth">
+    <div class="hero">
+      <p class="eyebrow">Class safety tracker</p>
+      <h1>Attendance Guardian</h1>
+      <p>Know your attendance percentage, warning level, and how many more classes you can safely miss.</p>
+    </div>
+    <div class="card auth-card">
+      <div class="tabs">
+        <button class="tab active" id="loginTab" type="button">Login</button>
+        <button class="tab" id="signupTab" type="button">Signup</button>
+      </div>
+      <form id="loginForm" class="form">
+        <label>Email <input id="loginEmail" type="email" required></label>
+        <label>Password <input id="loginPassword" type="password" required></label>
+        <button class="primary" type="submit">Open Dashboard</button>
+        <button class="secondary" id="demoBtn" type="button">Use Demo</button>
+      </form>
+      <form id="signupForm" class="form hidden">
+        <label>Name <input id="signupName" required></label>
+        <label>Email <input id="signupEmail" type="email" required></label>
+        <label>Password <input id="signupPassword" type="password" minlength="4" required></label>
+        <button class="primary" type="submit">Create Account</button>
+      </form>
+    </div>
+  </section>
+
+  <main class="app hidden" id="app">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Welcome back</p>
+        <h2 id="studentName">Student</h2>
+      </div>
+      <div class="actions">
+        <button class="secondary small" id="reminderBtn" type="button">Weekly Reminder</button>
+        <button class="secondary small" id="logoutBtn" type="button">Logout</button>
+      </div>
+    </header>
+
+    <section class="stats">
+      <article class="card stat"><span>Average</span><strong id="avgAttendance">0%</strong></article>
+      <article class="card stat"><span>Safe Courses</span><strong id="safeCount">0</strong></article>
+      <article class="card stat"><span>Risky</span><strong id="riskyCount">0</strong></article>
+      <article class="card stat danger"><span>Danger</span><strong id="dangerCount">0</strong></article>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <div class="head">
+          <div><p class="eyebrow">Course input</p><h3 id="formTitle">Add course</h3></div>
+          <button class="secondary small" id="clearForm" type="button">Clear</button>
+        </div>
+        <form id="courseForm" class="course-form">
+          <input type="hidden" id="courseId">
+          <label>Course Name <input id="courseName" required placeholder="Data Structures"></label>
+          <label>Total Classes <input id="totalClasses" type="number" min="0" required></label>
+          <label>Attended Classes <input id="attendedClasses" type="number" min="0" required></label>
+          <label>Missed Classes <input id="missedClasses" type="number" min="0" required></label>
+          <label>Minimum Required % <input id="requiredPercent" type="number" min="1" max="100" value="75" required></label>
+          <button class="primary wide" type="submit">Save Course</button>
+        </form>
+      </div>
+      <div class="card">
+        <div class="head"><div><p class="eyebrow">Visual overview</p><h3>Attendance chart</h3></div></div>
+        <canvas id="chart" width="680" height="380"></canvas>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="head"><div><p class="eyebrow">Course cards</p><h3>Current status</h3></div></div>
+      <div class="courses" id="courseList"></div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast"></div>
+  <script src="app.js"></script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("../service-worker.js",{scope:"./"}).catch(()=>{});}</script></body>
+</html>
